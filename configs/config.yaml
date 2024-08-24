@@ -1,0 +1,5 @@
+app.name: 'Link Stack'
+datasource:
+  uri: '{{MONGODB_URI}}'
+  username: '{{MONGODB_USERNAME}}'
+  password: '{{MONGODB_PASSWORD}}'
