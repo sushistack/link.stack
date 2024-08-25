@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -17,13 +16,13 @@ func DefaultConfigOptions() *EnvironmentOptions {
 	}
 }
 
-func LoadEnvironment(options *EnvironmentOptions) (map[string]string, error) {
+func LoadEnvironment(options *EnvironmentOptions) map[string]string {
 	if options == nil {
 		options = DefaultConfigOptions()
 	}
 
 	if err := godotenv.Load(options.EnvFilePath); err != nil {
-		return nil, fmt.Errorf("Error loading .env file: %v", err)
+		return make(map[string]string)
 	}
 
 	environment := map[string]string{
@@ -32,7 +31,7 @@ func LoadEnvironment(options *EnvironmentOptions) (map[string]string, error) {
 		"MONGODB_PASSWORD": getEnv("MONGODB_PASSWORD", ""),
 	}
 
-	return environment, nil
+	return environment
 }
 
 func getEnv(key, defaultValue string) string {

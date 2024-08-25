@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -19,40 +18,36 @@ type Config struct {
 	}
 }
 
-func LoadConfig(configFilePath string) (map[string]interface{}, error) {
+func LoadConfig(configFilePath string) map[string]interface{} {
 	viper.SetConfigFile(configFilePath)
 	viper.SetConfigType("yaml")
 
 	if err := viper.ReadInConfig(); err != nil {
-		return nil, fmt.Errorf("Error reading config file: %v", err)
+
+		return make(map[string]interface{})
 	}
 
+	env := LoadEnvironment(nil)
 	config := viper.AllSettings()
-	replaceEnvVariables(config)
+	replaceEnvVariables(config, env)
 
-	return config, nil
+	return config
 }
 
-func replaceEnvVariables(config map[string]interface{}) {
-	env, _ := LoadEnvironment(nil)
-
+func replaceEnvVariables(config map[string]interface{}, env map[string]string) {
 	for key, value := range config {
 		switch v := value.(type) {
 		case string:
 			config[key] = getEnvValue(env, v)
 		case map[string]interface{}:
-			replaceEnvVariables(v)
+			replaceEnvVariables(v, env)
 		}
 	}
 }
 
 func getEnvValue(env map[string]string, value string) string {
 	if strings.HasPrefix(value, "{{") && strings.HasSuffix(value, "}}") {
-
-		value, ok := env[ExtractBetweenBraces(value)]
-		if !ok {
-			return value
-		}
+		return env[ExtractBetweenBraces(value)]
 	}
 	return value
 }
@@ -60,14 +55,14 @@ func getEnvValue(env map[string]string, value string) string {
 func ExtractBetweenBraces(s string) string {
 	start := strings.Index(s, "{{")
 	if start == -1 {
-		return ""
+		return s
 	}
 
 	start += len("{{")
 	end := strings.Index(s[start:], "}}")
 	if end == -1 {
-		return ""
+		return s
 	}
 
-	return s[start : start+end]
+	return strings.TrimSpace(s[start : start+end])
 }
