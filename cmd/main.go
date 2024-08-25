@@ -6,5 +6,5 @@ import (
 
 func main() {
 	utils.InitLogger()
-
+	utils.InitProjectRoot()
 }
