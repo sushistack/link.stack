@@ -2,18 +2,20 @@ package database
 
 import (
 	"context"
+	"time"
+
+	"github.com/sushistack/link.stack/configs"
 	"github.com/sushistack/link.stack/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"time"
 )
 
 type MongoDBClient struct {
 	client *mongo.Client
 }
 
-func NewMongoDBClient(config utils.Config) *MongoDBClient {
+func NewMongoDBClient(config configs.Config) *MongoDBClient {
 	uri := config.Datasource.URI
 	connectionPoolMinSize := config.Datasource.ConnectionPool.MinSize
 	connectionPoolMaxSize := config.Datasource.ConnectionPool.MaxSize

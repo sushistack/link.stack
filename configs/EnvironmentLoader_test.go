@@ -1,4 +1,4 @@
-package utils
+package configs
 
 import (
 	"os"
@@ -9,7 +9,7 @@ import (
 )
 
 func TestLoadEnvironment(t *testing.T) {
-	envFilePath4Test := "../configs/test.env"
+	envFilePath4Test := "test.env"
 
 	envContent := "MONGODB_URI=mongodb://localhost:27017\n" +
 		"MONGODB_USERNAME=testuser\n" +

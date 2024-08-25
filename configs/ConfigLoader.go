@@ -1,10 +1,13 @@
-package utils
+package configs
 
 import (
+	"strings"
+
 	"github.com/mitchellh/mapstructure"
 	"github.com/sirupsen/logrus"
+	"github.com/sushistack/link.stack/utils"
+
 	"github.com/spf13/viper"
-	"strings"
 )
 
 // Config (= config.yml)
@@ -34,7 +37,7 @@ func LoadConfig(configFilePath string) *Config {
 	viper.SetConfigType("yaml")
 
 	if err := viper.ReadInConfig(); err != nil {
-		Logger.WithFields(logrus.Fields{
+		utils.Logger.WithFields(logrus.Fields{
 			"filePath": configFilePath,
 		}).Error("Can not read config file.", err)
 		return NewDefaultConfig()
@@ -46,7 +49,7 @@ func LoadConfig(configFilePath string) *Config {
 
 	var cfg Config
 	if err := mapstructure.Decode(config, &cfg); err != nil {
-		Logger.WithFields(logrus.Fields{
+		utils.Logger.WithFields(logrus.Fields{
 			"config": config,
 		}).Error("Can not decode config map.", err)
 		return NewDefaultConfig()

@@ -1,4 +1,4 @@
-package utils
+package configs
 
 import (
 	"os"
@@ -12,7 +12,7 @@ type EnvironmentOptions struct {
 
 func DefaultConfigOptions() *EnvironmentOptions {
 	return &EnvironmentOptions{
-		EnvFilePath: "../configs/.env",
+		EnvFilePath: ".env",
 	}
 }
 
