@@ -6,9 +6,11 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/sushistack/link.stack/utils"
 )
 
 func TestLoadConfig(t *testing.T) {
+	utils.InitProjectRoot()
 	testConfigFile := "../configs/config-test.yaml"
 
 	configContent := "app:\n" +
@@ -47,7 +49,7 @@ func TestLoadConfig(t *testing.T) {
 				MinSize uint64 `mapstructure:"min"`
 				MaxSize uint64 `mapstructure:"max"`
 				MaxIdle int    `mapstructure:"max"`
-			}
+			} `mapstructure:"connection-pool"`
 		}{
 			URI:          env["MONGODB_URI"],
 			Username:     env["MONGODB_USERNAME"],
@@ -56,9 +58,11 @@ func TestLoadConfig(t *testing.T) {
 		},
 	}
 
-	config := LoadConfig(testConfigFile)
+	config := LoadConfig(&ConfigOptions{ConfigFilePath: testConfigFile})
 	assert.NoError(t, err)
 	assert.Equal(t, expectedConfig, config)
+	assert.Equal(t, "Link Stack", config.App.Name)
+	assert.Equal(t, "mongodb://localhost:27017", config.Datasource.URI)
 }
 
 func TestReplaceEnvVariables(t *testing.T) {

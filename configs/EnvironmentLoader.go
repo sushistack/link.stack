@@ -1,9 +1,11 @@
 package configs
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/sushistack/link.stack/utils"
 )
 
 type EnvironmentOptions struct {
@@ -12,7 +14,7 @@ type EnvironmentOptions struct {
 
 func DefaultConfigOptions() *EnvironmentOptions {
 	return &EnvironmentOptions{
-		EnvFilePath: ".env",
+		EnvFilePath: utils.ProjectRoot + "/configs/" + ".env",
 	}
 }
 
@@ -20,6 +22,9 @@ func LoadEnvironment(options *EnvironmentOptions) map[string]string {
 	if options == nil {
 		options = DefaultConfigOptions()
 	}
+	fmt.Println("===")
+	fmt.Println(options)
+	fmt.Println("===")
 
 	if err := godotenv.Load(options.EnvFilePath); err != nil {
 		return make(map[string]string)

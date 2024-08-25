@@ -24,21 +24,34 @@ type Config struct {
 			MinSize uint64 `mapstructure:"min"`
 			MaxSize uint64 `mapstructure:"max"`
 			MaxIdle int    `mapstructure:"max"`
-		}
-	}
+		} `mapstructure:"connection-pool"`
+	} `mapstructure:"datasource"`
 }
 
 func NewDefaultConfig() *Config {
 	return &Config{}
 }
 
-func LoadConfig(configFilePath string) *Config {
-	viper.SetConfigFile(configFilePath)
+type ConfigOptions struct {
+	ConfigFilePath string
+}
+
+func DefaultOptions() *ConfigOptions {
+	return &ConfigOptions{
+		ConfigFilePath: utils.ProjectRoot + "/configs/config.yaml",
+	}
+}
+
+func LoadConfig(options *ConfigOptions) *Config {
+	if options == nil {
+		options = DefaultOptions()
+	}
+	viper.SetConfigFile(options.ConfigFilePath)
 	viper.SetConfigType("yaml")
 
 	if err := viper.ReadInConfig(); err != nil {
 		utils.Logger.WithFields(logrus.Fields{
-			"filePath": configFilePath,
+			"filePath": options.ConfigFilePath,
 		}).Error("Can not read config file.", err)
 		return NewDefaultConfig()
 	}
