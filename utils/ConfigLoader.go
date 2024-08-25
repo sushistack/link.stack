@@ -1,9 +1,10 @@
 package utils
 
 import (
-	"strings"
-
+	"github.com/mitchellh/mapstructure"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"strings"
 )
 
 // Config (= config.yml)
@@ -12,26 +13,46 @@ type Config struct {
 		Name string `mapstructure:"name"`
 	}
 	Datasource struct {
-		URI      string `mapstructure:"uri"`
-		Username string `mapstructure:"username"`
-		Password string `mapstructure:"password"`
+		URI            string `mapstructure:"uri"`
+		Username       string `mapstructure:"username"`
+		Password       string `mapstructure:"password"`
+		DatabaseName   string `mapstructure:"db"`
+		ConnectionPool struct {
+			MinSize uint64 `mapstructure:"min"`
+			MaxSize uint64 `mapstructure:"max"`
+			MaxIdle int    `mapstructure:"max"`
+		}
 	}
 }
 
-func LoadConfig(configFilePath string) map[string]interface{} {
+func NewDefaultConfig() *Config {
+	return &Config{}
+}
+
+func LoadConfig(configFilePath string) *Config {
 	viper.SetConfigFile(configFilePath)
 	viper.SetConfigType("yaml")
 
 	if err := viper.ReadInConfig(); err != nil {
-
-		return make(map[string]interface{})
+		Logger.WithFields(logrus.Fields{
+			"filePath": configFilePath,
+		}).Error("Can not read config file.", err)
+		return NewDefaultConfig()
 	}
 
 	env := LoadEnvironment(nil)
 	config := viper.AllSettings()
 	replaceEnvVariables(config, env)
 
-	return config
+	var cfg Config
+	if err := mapstructure.Decode(config, &cfg); err != nil {
+		Logger.WithFields(logrus.Fields{
+			"config": config,
+		}).Error("Can not decode config map.", err)
+		return NewDefaultConfig()
+	}
+
+	return &cfg
 }
 
 func replaceEnvVariables(config map[string]interface{}, env map[string]string) {

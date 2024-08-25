@@ -3,3 +3,8 @@ datasource:
   uri: '{{MONGODB_URI}}'
   username: '{{MONGODB_USERNAME}}'
   password: '{{MONGODB_PASSWORD}}'
+  db: '{{MONGODB_DATABASE_NAME}}'
+  connection-pool:
+    min-size: 5
+    max-size: 20
+    max-idle: 10

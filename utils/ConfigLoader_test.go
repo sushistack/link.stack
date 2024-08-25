@@ -14,28 +14,45 @@ func TestLoadConfig(t *testing.T) {
 	configContent := "app:\n" +
 		"  name: \"Link Stack\"\n" +
 		"datasource:\n" +
-		"  uri: \"{{MONGODB_URI}}\"\n"
+		"  uri: \"{{MONGODB_URI}}\"\n" +
+		"  username: \"{{MONGODB_USERNAME}}\"\n" +
+		"  password: \"{{MONGODB_PASSWORD}}\"\n" +
+		"  db: \"{{MONGODB_DATABASE_NAME}}\"\n"
 
-	// 설정 파일 작성
 	err := os.WriteFile(testConfigFile, []byte(configContent), 0644)
 	if err != nil {
 		t.Fatalf("Error writing test config file: %v", err)
 	}
 	defer func() {
-		// 파일 삭제
 		if err := os.Remove(testConfigFile); err != nil {
 			t.Fatalf("Error removing test config file: %v", err)
 		}
 	}()
 
+	// need .env (in configs)
 	env := LoadEnvironment(nil)
 	// Test LoadConfig
-	expectedConfig := map[string]interface{}{
-		"app": map[string]interface{}{
-			"name": "Link Stack",
+	expectedConfig := &Config{
+		App: struct {
+			Name string `mapstructure:"name"`
+		}{
+			Name: "Link Stack",
 		},
-		"datasource": map[string]interface{}{
-			"uri": env["MONGODB_URI"],
+		Datasource: struct {
+			URI            string `mapstructure:"uri"`
+			Username       string `mapstructure:"username"`
+			Password       string `mapstructure:"password"`
+			DatabaseName   string `mapstructure:"db"`
+			ConnectionPool struct {
+				MinSize uint64 `mapstructure:"min"`
+				MaxSize uint64 `mapstructure:"max"`
+				MaxIdle int    `mapstructure:"max"`
+			}
+		}{
+			URI:          env["MONGODB_URI"],
+			Username:     env["MONGODB_USERNAME"],
+			Password:     env["MONGODB_PASSWORD"],
+			DatabaseName: env["MONGODB_DATABASE_NAME"],
 		},
 	}
 
