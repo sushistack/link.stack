@@ -15,10 +15,10 @@ type MongoDBClient struct {
 	client *mongo.Client
 }
 
-func NewMongoDBClient(config *configs.Config) *MongoDBClient {
-	uri := config.Datasource.URI
-	connectionPoolMinSize := config.Datasource.ConnectionPool.MinSize
-	connectionPoolMaxSize := config.Datasource.ConnectionPool.MaxSize
+func NewMongoDBClient(datasource *configs.Datasource) *MongoDBClient {
+	uri := datasource.URI
+	connectionPoolMinSize := datasource.ConnectionPool.MinSize
+	connectionPoolMaxSize := datasource.ConnectionPool.MaxSize
 	// connectionPoolMaxIdle := config.Datasource.ConnectionPool.MaxIdle
 
 	clientOptions := options.Client().

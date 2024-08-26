@@ -15,17 +15,19 @@ type Config struct {
 	App struct {
 		Name string `mapstructure:"name"`
 	}
-	Datasource struct {
-		URI            string `mapstructure:"uri"`
-		Username       string `mapstructure:"username"`
-		Password       string `mapstructure:"password"`
-		DatabaseName   string `mapstructure:"db"`
-		ConnectionPool struct {
-			MinSize uint64 `mapstructure:"min"`
-			MaxSize uint64 `mapstructure:"max"`
-			MaxIdle int    `mapstructure:"max"`
-		} `mapstructure:"connection-pool"`
-	} `mapstructure:"datasource"`
+	Datasource *Datasource
+}
+
+type Datasource struct {
+	URI            string `mapstructure:"uri"`
+	Username       string `mapstructure:"username"`
+	Password       string `mapstructure:"password"`
+	DatabaseName   string `mapstructure:"db"`
+	ConnectionPool struct {
+		MinSize uint64 `mapstructure:"min"`
+		MaxSize uint64 `mapstructure:"max"`
+		MaxIdle int    `mapstructure:"max"`
+	} `mapstructure:"connection-pool"`
 }
 
 func NewDefaultConfig() *Config {

@@ -33,6 +33,13 @@ func TestLoadConfig(t *testing.T) {
 
 	// need .env (in configs)
 	env := LoadEnvironment(nil)
+
+	datasource := &Datasource{
+		URI:          env["MONGODB_URI"],
+		Username:     env["MONGODB_USERNAME"],
+		Password:     env["MONGODB_PASSWORD"],
+		DatabaseName: env["MONGODB_DATABASE_NAME"],
+	}
 	// Test LoadConfig
 	expectedConfig := &Config{
 		App: struct {
@@ -40,22 +47,7 @@ func TestLoadConfig(t *testing.T) {
 		}{
 			Name: "Link Stack",
 		},
-		Datasource: struct {
-			URI            string `mapstructure:"uri"`
-			Username       string `mapstructure:"username"`
-			Password       string `mapstructure:"password"`
-			DatabaseName   string `mapstructure:"db"`
-			ConnectionPool struct {
-				MinSize uint64 `mapstructure:"min"`
-				MaxSize uint64 `mapstructure:"max"`
-				MaxIdle int    `mapstructure:"max"`
-			} `mapstructure:"connection-pool"`
-		}{
-			URI:          env["MONGODB_URI"],
-			Username:     env["MONGODB_USERNAME"],
-			Password:     env["MONGODB_PASSWORD"],
-			DatabaseName: env["MONGODB_DATABASE_NAME"],
-		},
+		Datasource: datasource,
 	}
 
 	config := LoadConfig(&ConfigOptions{ConfigFilePath: testConfigFile})

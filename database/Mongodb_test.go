@@ -12,7 +12,7 @@ import (
 func TestNewMongoDBClient(t *testing.T) {
 	utils.InitProjectRoot()
 	config := configs.LoadConfig(nil)
-	client := NewMongoDBClient(config)
+	client := NewMongoDBClient(config.Datasource)
 
 	assert.NotNil(t, client)
 }
@@ -20,7 +20,7 @@ func TestNewMongoDBClient(t *testing.T) {
 func TestInsertDocument(t *testing.T) {
 	utils.InitProjectRoot()
 	config := configs.LoadConfig(nil)
-	client := NewMongoDBClient(config)
+	client := NewMongoDBClient(config.Datasource)
 
 	result, err := client.InsertDocument("testdb", "testcollection", bson.M{"name": "test"})
 	assert.NoError(t, err)
@@ -31,7 +31,7 @@ func TestInsertDocument(t *testing.T) {
 func TestFindDocument(t *testing.T) {
 	utils.InitProjectRoot()
 	config := configs.LoadConfig(nil)
-	client := NewMongoDBClient(config)
+	client := NewMongoDBClient(config.Datasource)
 
 	client.InsertDocument("testdb", "testcollection", bson.M{"name": "test"})
 	result, err := client.FindDocument("testdb", "testcollection", bson.M{"name": "test"})
@@ -43,7 +43,7 @@ func TestFindDocument(t *testing.T) {
 func TestUpdateDocument(t *testing.T) {
 	utils.InitProjectRoot()
 	config := configs.LoadConfig(nil)
-	client := NewMongoDBClient(config)
+	client := NewMongoDBClient(config.Datasource)
 
 	client.InsertDocument("testdb", "testcollection", bson.M{"name": "test"})
 	result, err := client.UpdateDocument("testdb", "testcollection", bson.M{"name": "test"}, bson.M{"$set": bson.M{"name": "updated"}})
@@ -55,7 +55,7 @@ func TestUpdateDocument(t *testing.T) {
 func TestDeleteDocument(t *testing.T) {
 	utils.InitProjectRoot()
 	config := configs.LoadConfig(nil)
-	client := NewMongoDBClient(config)
+	client := NewMongoDBClient(config.Datasource)
 
 	client.InsertDocument("testdb", "testcollection", bson.M{"name": "test"})
 	result, err := client.DeleteDocument("testdb", "testcollection", bson.M{"name": "test"})
