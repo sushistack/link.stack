@@ -1,7 +1,6 @@
 package configs
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -22,9 +21,6 @@ func LoadEnvironment(options *EnvironmentOptions) map[string]string {
 	if options == nil {
 		options = DefaultConfigOptions()
 	}
-	fmt.Println("===")
-	fmt.Println(options)
-	fmt.Println("===")
 
 	if err := godotenv.Load(options.EnvFilePath); err != nil {
 		return make(map[string]string)
