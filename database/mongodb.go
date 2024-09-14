@@ -15,6 +15,7 @@ type MongoDBClient struct {
 	client *mongo.Client
 }
 
+// connection pool 방식 고민
 func NewMongoDBClient(datasource *configs.Datasource) *MongoDBClient {
 	uri := datasource.URI
 	connectionPoolMinSize := datasource.ConnectionPool.MinSize
