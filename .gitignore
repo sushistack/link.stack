@@ -3,3 +3,6 @@ configs/.env
 
 # intelij
 .idea
+
+# mac
+.Store
